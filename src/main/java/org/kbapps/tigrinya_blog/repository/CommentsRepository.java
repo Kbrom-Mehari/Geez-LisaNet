@@ -1,4 +1,8 @@
 package org.kbapps.tigrinya_blog.repository;
 
-public interface CommentsRepository {
+import org.kbapps.tigrinya_blog.model.Comments;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CommentsRepository extends JpaRepository<Comments, Long> {
+
 }
