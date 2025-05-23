@@ -11,26 +11,45 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    public User createUser(User user) {
-        return userRepository.save(user);
+
+    public User createUser(User  user) {
+        userRepository.save(user);
+        return user;
     }
+
     public User updateUser(User user, Long id) {
         User oldUser=userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with Id: "+id+" Not Found"));
-        oldUser.setPassword(user.getPassword());
-        oldUser.setUsername(user.getUsername());
-        return userRepository.save(oldUser);
+           if(user.getFirstName()!=null){
+               oldUser.setFirstName(user.getFirstName());
+           }
+           if(user.getLastName()!=null){
+               oldUser.setLastName(user.getLastName());
+           }
+           if(user.getPassword()!=null){
+               oldUser.setPassword(user.getPassword());
+           }
+           if(user.getGender()!=null){
+               oldUser.setGender(user.getGender());
+           }
+           if(user.getUsername()!=null){
+               oldUser.setUsername(user.getUsername());
+           }
+           userRepository.save(oldUser);
+           return oldUser;
     }
+
     public User getUser(Long id) {
-        return  userRepository.findById(id)
+        User user=userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with Id: "+id+" Not Found"));
+        return user;
     }
     public List<User> getAllUsers() {
         return userRepository.findAll();
+
     }
-    public String deleteUser(Long id){
+    public void deleteUser(Long id){
         userRepository.findById(id)
                 .ifPresentOrElse(userRepository:: delete,()->{throw new ResourceNotFoundException("User with Id: "+id+" Not Found");});
-        return "User with Id: "+id+" Deleted";
     }
 }

@@ -12,30 +12,44 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BlogService {
     private final BlogRepository blogRepository;
-    public BlogPost createBlogPost(BlogPost blogPost) {
-        return blogRepository.save(blogPost);
+
+    public BlogPost createBlogPost(BlogPost blogPost) {     // using DTO
+        return  blogRepository.save(blogPost);
+
     }
 
     public List<BlogPost> getBlogPosts() {
         return blogRepository.findAll();
     }
+
     public BlogPost getBlogPostById(Long id) {
-         return blogRepository.findById(id)
+         BlogPost blog= blogRepository.findById(id)
                  .orElseThrow(()->new ResourceNotFoundException("Blog with Id: "+id+" Not Found"));
+         return blog;
     }
-    public String deleteBlogPostById(Long id) {
+    public void deleteBlogPostById(Long id) {
         blogRepository.findById(id)
                 .ifPresentOrElse(blogRepository::delete,()-> {
                     throw new ResourceNotFoundException("Blog with Id: "+id+" Not Found");});
-        return "Blog with Id: "+id+" Deleted";
+
     }
+
     public BlogPost updateBlogPost(BlogPost blogPost, Long id) {
-          BlogPost blog=blogRepository.findById(id)
-                  .orElseThrow(()->new ResourceNotFoundException("Blog with Id: "+id+" Not Found"));
-          blog.setTitle(blogPost.getTitle());
-          blog.setBody(blogPost.getBody());
-          blog.setSummary(blogPost.getSummary());
-          return blogRepository.save(blog);
+        BlogPost blog=blogRepository.findById(id)
+                .orElseThrow(()->new ResourceNotFoundException("Blog with Id: "+id+" Not Found"));
+        if(blogPost.getTitle()!=null){
+            blog.setTitle(blogPost.getTitle());
+        }
+        if(blogPost.getDescription()!=null){
+            blog.setDescription(blogPost.getDescription());
+        }
+        if(blogPost.getBody()!=null){
+            blog.setBody(blogPost.getBody());
+        }
+        if(blogPost.getSummary()!=null){
+            blog.setSummary(blogPost.getSummary());
+        }
+        return blogRepository.save(blog);
     }
 
 }

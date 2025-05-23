@@ -7,11 +7,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequiredArgsConstructor
+
 @RestController
 @RequestMapping(("/blogs"))
+@RequiredArgsConstructor
 public class BlogController {
     private final BlogService blogService;
+
 @GetMapping
     public List<BlogPost> getAllBlogPosts(){
        return blogService.getBlogPosts();
@@ -21,20 +23,17 @@ public BlogPost getBlogPostById(@PathVariable Long id){
     return blogService.getBlogPostById(id);
 }
 @PostMapping
-    public String addBlogPost(@RequestBody BlogPost blogPost){
-      blogService.createBlogPost(blogPost);
-      return "Blog Post Added";
+    public BlogPost createBlogPost(@RequestBody BlogPost blogPost){
+    return blogService.createBlogPost(blogPost);
+
 }
-@PutMapping("/{id}")
-    public BlogPost updateBlogPost(@RequestBody BlogPost blogPost,@PathVariable Long id){
-      blogService.updateBlogPost(blogPost,id);
-      return blogPost;
+@PatchMapping("/{id}")
+    public BlogPost updateBlogPost(@RequestBody BlogPost blogPost, @PathVariable Long id){
+      return blogService.updateBlogPost(blogPost,id);
 }
 @DeleteMapping("/{id}")
     public String deleteBlogPost(@PathVariable Long id){
     blogService.deleteBlogPostById(id);
     return "Blog Post Deleted";
 }
-
-
 }

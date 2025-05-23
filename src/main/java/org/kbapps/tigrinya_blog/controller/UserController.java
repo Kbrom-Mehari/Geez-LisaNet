@@ -13,21 +13,24 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
     @GetMapping
-    public List<User> getUsers() {
+    public List<User> getUsers() {        // Using DTO
         return userService.getAllUsers();
     }
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable Long id){    // Using DTO
+        return userService.getUser(id);
+    }
     @PostMapping
-    public User createUser(@RequestBody User user) {
+    public User createUser(@RequestBody User  user) {        // using DTO
         return userService.createUser(user);
     }
     @DeleteMapping("/{id}")
-    public String deleteUser(@PathVariable Long id) {
+    public String deleteUser(@PathVariable Long id) {      // DTO not needed here
         userService.deleteUser(id);
         return "User deleted";
     }
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public User updateUser(@PathVariable Long id, @RequestBody User user) {
        return userService.updateUser(user,id);
-
     }
 }
