@@ -1,7 +1,9 @@
 package org.kbapps.tigrinya_blog.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.kbapps.tigrinya_blog.model.User;
+import org.kbapps.tigrinya_blog.dto.userDto.CreateUserDto;
+import org.kbapps.tigrinya_blog.dto.userDto.GetUserDto;
+import org.kbapps.tigrinya_blog.dto.userDto.UpdateUserDto;
 import org.kbapps.tigrinya_blog.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,16 +15,16 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
     @GetMapping
-    public List<User> getUsers() {        // Using DTO
+    public List<GetUserDto> getUsers() {        // Using DTO
         return userService.getAllUsers();
     }
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable Long id){    // Using DTO
+    public GetUserDto getUserById(@PathVariable Long id){    // Using DTO
         return userService.getUser(id);
     }
     @PostMapping
-    public User createUser(@RequestBody User  user) {        // using DTO
-        return userService.createUser(user);
+    public GetUserDto createUser(@RequestBody CreateUserDto createUserDto) {        // using DTO
+        return userService.createUser(createUserDto);
     }
     @DeleteMapping("/{id}")
     public String deleteUser(@PathVariable Long id) {      // DTO not needed here
@@ -30,7 +32,7 @@ public class UserController {
         return "User deleted";
     }
     @PatchMapping("/{id}")
-    public User updateUser(@PathVariable Long id, @RequestBody User user) {
-       return userService.updateUser(user,id);
+    public GetUserDto updateUser(@PathVariable Long id, @RequestBody UpdateUserDto updateUserDto) {
+       return userService.updateUser(updateUserDto,id);
     }
 }

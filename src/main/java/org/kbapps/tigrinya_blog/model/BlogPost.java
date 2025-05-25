@@ -4,10 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.kbapps.tigrinya_blog.Auditable;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -22,8 +18,8 @@ public class BlogPost extends Auditable {
     @Column(nullable=false)
     private String body;
     private String summary;
-
     @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="authorId",unique=true, nullable=false)
     private User author;
 
 }

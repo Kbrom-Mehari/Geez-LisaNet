@@ -2,7 +2,12 @@ package org.kbapps.tigrinya_blog.service;
 
 import lombok.RequiredArgsConstructor;
 
+import org.kbapps.tigrinya_blog.dto.commentDto.CreateCommentDto;
+import org.kbapps.tigrinya_blog.dto.commentDto.GetCommentDto;
+import org.kbapps.tigrinya_blog.dto.commentDto.UpdateCommentDto;
 import org.kbapps.tigrinya_blog.exception.ResourceNotFoundException;
+import org.kbapps.tigrinya_blog.mapper.commentMapper.CreateCommentMapper;
+import org.kbapps.tigrinya_blog.mapper.commentMapper.GetCommentMapper;
 import org.kbapps.tigrinya_blog.model.Comment;
 import org.kbapps.tigrinya_blog.repository.CommentRepository;
 import org.springframework.stereotype.Service;
@@ -13,22 +18,25 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommentService {
     private final CommentRepository commentRepository;
+    private final CreateCommentMapper createCommentMapper;
+    private final GetCommentMapper getCommentMapper;
+    private final UserService userService;
+    private final BlogService blogService;
 
-    public Comment createComment(Comment comment) {
-
-        return commentRepository.save(comment);
-
+    public GetCommentDto createComment(CreateCommentDto createCommentDto) {
+        Comment comment= createCommentMapper.toEntity(createCommentDto,userService,blogService);
+        return getCommentMapper.toDto(commentRepository.save(comment));
     }
 
-    public List<Comment> getCommentsByPostId(Long id) {
-         return commentRepository.findCommentsByPostId(id);
+    public List<GetCommentDto> getCommentsByPostId(Long id) {
+         return getCommentMapper.toDtoList(commentRepository.findCommentsByPostId(id));
     }
-    public Comment updateComment(Comment comment, Long id) {
-        Comment com=commentRepository.findById(id)
+    public GetCommentDto updateComment(UpdateCommentDto updateCommentDto, Long id) {
+        Comment comment=commentRepository.findById(id)
                 .orElseThrow(()->new ResourceNotFoundException("Comment with id: "+id+" not found"));
 
-         com.setContent(comment.getContent());
-         return commentRepository.save(com);
+         comment.setContent(updateCommentDto.getContent());
+         return getCommentMapper.toDto( commentRepository.save(comment));
     }
     public void deleteComment(Long id){
         commentRepository.findById(id)

@@ -1,7 +1,12 @@
 package org.kbapps.tigrinya_blog.service;
 
 import lombok.RequiredArgsConstructor;
+import org.kbapps.tigrinya_blog.dto.userDto.CreateUserDto;
+import org.kbapps.tigrinya_blog.dto.userDto.GetUserDto;
+import org.kbapps.tigrinya_blog.dto.userDto.UpdateUserDto;
 import org.kbapps.tigrinya_blog.exception.ResourceNotFoundException;
+import org.kbapps.tigrinya_blog.mapper.userMapper.CreateUserMapper;
+import org.kbapps.tigrinya_blog.mapper.userMapper.GetUserMapper;
 import org.kbapps.tigrinya_blog.model.User;
 import org.kbapps.tigrinya_blog.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -11,45 +16,51 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final CreateUserMapper createUserMapper;
+    private final GetUserMapper getUserMapper;
 
-    public User createUser(User  user) {
-        userRepository.save(user);
-        return user;
+    public GetUserDto createUser(CreateUserDto createUserDto) {
+        User user=createUserMapper.toEntity(createUserDto);
+        return getUserMapper.toDto(userRepository.save(user)) ;
     }
 
-    public User updateUser(User user, Long id) {
+    public GetUserDto updateUser(UpdateUserDto updateUserDto, Long id) {
         User oldUser=userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with Id: "+id+" Not Found"));
-           if(user.getFirstName()!=null){
-               oldUser.setFirstName(user.getFirstName());
+           if(updateUserDto.getFirstName()!=null){
+               oldUser.setFirstName(updateUserDto.getFirstName());
            }
-           if(user.getLastName()!=null){
-               oldUser.setLastName(user.getLastName());
+           if(updateUserDto.getLastName()!=null){
+               oldUser.setLastName(updateUserDto.getLastName());
            }
-           if(user.getPassword()!=null){
-               oldUser.setPassword(user.getPassword());
+           if(updateUserDto.getPassword()!=null){
+               oldUser.setPassword(updateUserDto.getPassword());
            }
-           if(user.getGender()!=null){
-               oldUser.setGender(user.getGender());
+           if(updateUserDto.getGender()!=null){
+               oldUser.setGender(updateUserDto.getGender());
            }
-           if(user.getUsername()!=null){
-               oldUser.setUsername(user.getUsername());
+           if(updateUserDto.getUsername()!=null){
+               oldUser.setUsername(updateUserDto.getUsername());
            }
            userRepository.save(oldUser);
-           return oldUser;
+           return getUserMapper.toDto(oldUser);
     }
 
-    public User getUser(Long id) {
+    public GetUserDto getUser(Long id) {    //for controller
         User user=userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with Id: "+id+" Not Found"));
-        return user;
+        return getUserMapper.toDto(user);
     }
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-
+    public List<GetUserDto> getAllUsers() {
+        return getUserMapper.toDtoList(userRepository.findAll());
     }
-    public void deleteUser(Long id){
+    public void deleteUser(Long id){    // DTO not needed for deleting
         userRepository.findById(id)
                 .ifPresentOrElse(userRepository:: delete,()->{throw new ResourceNotFoundException("User with Id: "+id+" Not Found");});
+    }
+
+    public User findUserById(Long id) {      //only for Mappers
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User with Id: "+id+" Not Found"));
     }
 }

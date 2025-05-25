@@ -1,7 +1,12 @@
 package org.kbapps.tigrinya_blog.service;
 
 import lombok.RequiredArgsConstructor;
+import org.kbapps.tigrinya_blog.dto.blogDto.CreateBlogDto;
+import org.kbapps.tigrinya_blog.dto.blogDto.GetBlogDto;
+import org.kbapps.tigrinya_blog.dto.blogDto.UpdateBlogDto;
 import org.kbapps.tigrinya_blog.exception.ResourceNotFoundException;
+import org.kbapps.tigrinya_blog.mapper.blogMapper.CreateBlogMapper;
+import org.kbapps.tigrinya_blog.mapper.blogMapper.GetBlogMapper;
 import org.kbapps.tigrinya_blog.model.BlogPost;
 import org.kbapps.tigrinya_blog.repository.BlogRepository;
 import org.springframework.stereotype.Service;
@@ -12,20 +17,23 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BlogService {
     private final BlogRepository blogRepository;
+    private final GetBlogMapper getBlogMapper;
+    private final CreateBlogMapper createBlogMapper;
+    private final UserService userService;
 
-    public BlogPost createBlogPost(BlogPost blogPost) {     // using DTO
-        return  blogRepository.save(blogPost);
-
+    public GetBlogDto createBlogPost(CreateBlogDto createBlogDto) { // using DTO
+        BlogPost blog=createBlogMapper.toEntity(createBlogDto,userService);
+        return getBlogMapper.toDto(blogRepository.save(blog));
     }
 
-    public List<BlogPost> getBlogPosts() {
-        return blogRepository.findAll();
+    public List<GetBlogDto> getBlogPosts() {
+        return getBlogMapper.toDtoList(blogRepository.findAll());
     }
 
-    public BlogPost getBlogPostById(Long id) {
+    public GetBlogDto getBlogPostById(Long id) {
          BlogPost blog= blogRepository.findById(id)
                  .orElseThrow(()->new ResourceNotFoundException("Blog with Id: "+id+" Not Found"));
-         return blog;
+         return getBlogMapper.toDto(blog);
     }
     public void deleteBlogPostById(Long id) {
         blogRepository.findById(id)
@@ -34,22 +42,27 @@ public class BlogService {
 
     }
 
-    public BlogPost updateBlogPost(BlogPost blogPost, Long id) {
+    public GetBlogDto updateBlogPost(UpdateBlogDto updateBlogDto, Long id) {
         BlogPost blog=blogRepository.findById(id)
                 .orElseThrow(()->new ResourceNotFoundException("Blog with Id: "+id+" Not Found"));
-        if(blogPost.getTitle()!=null){
-            blog.setTitle(blogPost.getTitle());
+        if(updateBlogDto.getTitle()!=null){
+            blog.setTitle(updateBlogDto.getTitle());
         }
-        if(blogPost.getDescription()!=null){
-            blog.setDescription(blogPost.getDescription());
+        if(updateBlogDto.getDescription()!=null){
+            blog.setDescription(updateBlogDto.getDescription());
         }
-        if(blogPost.getBody()!=null){
-            blog.setBody(blogPost.getBody());
+        if(updateBlogDto.getBody()!=null){
+            blog.setBody(updateBlogDto.getBody());
         }
-        if(blogPost.getSummary()!=null){
-            blog.setSummary(blogPost.getSummary());
+        if(updateBlogDto.getSummary()!=null){
+            blog.setSummary(updateBlogDto.getSummary());
         }
-        return blogRepository.save(blog);
+        return getBlogMapper.toDto(blogRepository.save(blog));
+    }
+
+    public BlogPost findBlogById(Long id) {    //for Mappers only
+        return blogRepository.findById(id)
+                .orElseThrow(()->new ResourceNotFoundException("Blog with Id: "+id+" Not Found"));
     }
 
 }
