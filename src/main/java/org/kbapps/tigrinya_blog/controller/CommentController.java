@@ -6,6 +6,8 @@ import org.kbapps.tigrinya_blog.dto.commentDto.GetCommentDto;
 import org.kbapps.tigrinya_blog.dto.commentDto.UpdateCommentDto;
 import org.kbapps.tigrinya_blog.model.Comment;
 import org.kbapps.tigrinya_blog.service.CommentService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -17,17 +19,25 @@ import java.util.List;
 public class CommentController {
     private final CommentService commentService;
     @GetMapping("/{id}")
-    public List<GetCommentDto> getCommentsByPostId(@PathVariable Long id) {         //using DTO
-        return commentService.getCommentsByPostId(id);
+    public ResponseEntity<List<GetCommentDto>> getCommentsByPostId(@PathVariable Long id) {         //using DTO
+        List<GetCommentDto> comments=commentService.getCommentsByPostId(id);
+        if(comments.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(comments);
     }
     @PostMapping
-    public GetCommentDto createComment(@RequestBody CreateCommentDto createCommentDto) {   //using DTO
-        return commentService.createComment(createCommentDto);
+    public ResponseEntity<GetCommentDto> createComment(@RequestBody CreateCommentDto createCommentDto) {   //using DTO
+        GetCommentDto comment=commentService.createComment(createCommentDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(comment);
     }
     @DeleteMapping("/{id}")
-    public String deleteComment(@PathVariable Long id) {                //DTO not needed
-        commentService.deleteComment(id);
-        return "Comment deleted";
+    public ResponseEntity<Void> deleteComment(@PathVariable Long id) {
+        Comment deletedComment=commentService.deleteComment(id);
+        if(deletedComment==null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.noContent().build();
     }
     @PutMapping ("/{id}")                                            //using DTO
     public GetCommentDto updateComment(@RequestBody UpdateCommentDto updateCommentDto, @PathVariable Long id) {

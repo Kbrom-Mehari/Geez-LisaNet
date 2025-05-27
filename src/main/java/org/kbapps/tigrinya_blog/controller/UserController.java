@@ -4,7 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.kbapps.tigrinya_blog.dto.userDto.CreateUserDto;
 import org.kbapps.tigrinya_blog.dto.userDto.GetUserDto;
 import org.kbapps.tigrinya_blog.dto.userDto.UpdateUserDto;
+import org.kbapps.tigrinya_blog.model.User;
 import org.kbapps.tigrinya_blog.service.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,24 +18,38 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
     @GetMapping
-    public List<GetUserDto> getUsers() {        // Using DTO
-        return userService.getAllUsers();
+    public ResponseEntity<List<GetUserDto>> getUsers() {        // Using DTO
+         List<GetUserDto> users= userService.getAllUsers();
+        return ResponseEntity.ok(users);         //returns status code: 200, ok
     }
     @GetMapping("/{id}")
-    public GetUserDto getUserById(@PathVariable Long id){    // Using DTO
-        return userService.getUser(id);
+    public ResponseEntity<GetUserDto> getUserById(@PathVariable Long id){    // Using DTO
+        GetUserDto user= userService.getUser(id);
+        if(user==null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(user);
     }
     @PostMapping
-    public GetUserDto createUser(@RequestBody CreateUserDto createUserDto) {        // using DTO
-        return userService.createUser(createUserDto);
+    public ResponseEntity<GetUserDto> createUser(@RequestBody CreateUserDto createUserDto) {        // using DTO
+        GetUserDto user =userService.createUser(createUserDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(user);  //status code 201 created
     }
     @DeleteMapping("/{id}")
-    public String deleteUser(@PathVariable Long id) {      // DTO not needed here
-        userService.deleteUser(id);
-        return "User deleted";
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        User deletedUser=userService.deleteUser(id);
+        if(deletedUser==null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.noContent().build();
+
     }
     @PatchMapping("/{id}")
-    public GetUserDto updateUser(@PathVariable Long id, @RequestBody UpdateUserDto updateUserDto) {
-       return userService.updateUser(updateUserDto,id);
+    public ResponseEntity<GetUserDto> updateUser(@PathVariable Long id, @RequestBody UpdateUserDto updateUserDto) {
+       GetUserDto updatedUser= userService.updateUser(updateUserDto,id);
+       if(updatedUser==null){
+           return ResponseEntity.notFound().build();
+       }
+       return ResponseEntity.ok(updatedUser);
     }
 }
