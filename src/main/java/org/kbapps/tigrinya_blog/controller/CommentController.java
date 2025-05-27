@@ -33,10 +33,7 @@ public class CommentController {
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteComment(@PathVariable Long id) {
-        Comment deletedComment=commentService.deleteComment(id);
-        if(deletedComment==null){
-            return ResponseEntity.notFound().build();
-        }
+        commentService.deleteComment(id);
         return ResponseEntity.noContent().build();
     }
     @PutMapping ("/{id}")                                            //using DTO

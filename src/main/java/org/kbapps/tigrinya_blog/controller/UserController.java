@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.kbapps.tigrinya_blog.dto.userDto.CreateUserDto;
 import org.kbapps.tigrinya_blog.dto.userDto.GetUserDto;
 import org.kbapps.tigrinya_blog.dto.userDto.UpdateUserDto;
-import org.kbapps.tigrinya_blog.model.User;
 import org.kbapps.tigrinya_blog.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,10 +36,7 @@ public class UserController {
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        User deletedUser=userService.deleteUser(id);
-        if(deletedUser==null){
-            return ResponseEntity.notFound().build();
-        }
+        userService.deleteUser(id);
         return ResponseEntity.noContent().build();
 
     }

@@ -54,10 +54,11 @@ public class UserService {
     public List<GetUserDto> getAllUsers() {
         return getUserMapper.toDtoList(userRepository.findAll());
     }
-    public User deleteUser(Long id){    // DTO not needed for deleting
-       User user= userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User with Id: "+id+" Not Found"));
-        userRepository.delete(user);
-        return user;
+    public void deleteUser(Long id){    // DTO not needed for deleting
+        userRepository.findById(id)
+               .ifPresentOrElse(userRepository::
+                       delete,()->{throw new ResourceNotFoundException("User with Id: "+id+" Not Found");});
+
     }
 
     public User findUserById(Long id) {      //only for Mappers

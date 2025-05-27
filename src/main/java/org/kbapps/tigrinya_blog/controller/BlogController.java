@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.kbapps.tigrinya_blog.dto.blogDto.CreateBlogDto;
 import org.kbapps.tigrinya_blog.dto.blogDto.GetBlogDto;
 import org.kbapps.tigrinya_blog.dto.blogDto.UpdateBlogDto;
-import org.kbapps.tigrinya_blog.model.BlogPost;
 import org.kbapps.tigrinya_blog.service.BlogService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,10 +45,7 @@ public ResponseEntity<GetBlogDto> getBlogPostById(@PathVariable Long id){
 }
 @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBlogPost(@PathVariable Long id){
-    BlogPost blog= blogService.deleteBlogPostById(id);
-    if(blog==null){
-        return ResponseEntity.notFound().build();
-    }
+    blogService.deleteBlogPostById(id);
     return ResponseEntity.noContent().build();
 }
 }

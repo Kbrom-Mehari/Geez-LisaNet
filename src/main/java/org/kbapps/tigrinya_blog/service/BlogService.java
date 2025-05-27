@@ -35,10 +35,9 @@ public class BlogService {
                  .orElseThrow(()->new ResourceNotFoundException("Blog with Id: "+id+" Not Found"));
          return getBlogMapper.toDto(blog);
     }
-    public BlogPost deleteBlogPostById(Long id) {
-      BlogPost blog=  blogRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Blog with Id: "+id+" Not Found"));
-         blogRepository.delete(blog);
-         return blog;
+    public void deleteBlogPostById(Long id) {
+      blogRepository.findById(id).ifPresentOrElse(blogRepository::
+                                     delete,()->{throw new ResourceNotFoundException("Blog with Id: "+id+" Not Found");});
     }
 
     public GetBlogDto updateBlogPost(UpdateBlogDto updateBlogDto, Long id) {

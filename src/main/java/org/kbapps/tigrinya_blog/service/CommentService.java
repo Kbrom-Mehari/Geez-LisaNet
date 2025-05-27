@@ -38,9 +38,11 @@ public class CommentService {
          comment.setContent(updateCommentDto.getContent());
          return getCommentMapper.toDto( commentRepository.save(comment));
     }
-    public Comment deleteComment(Long id){
-       Comment comment= commentRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Comment with id: "+id+" not found"));
-                commentRepository.delete(comment);
-         return comment;
+    public void deleteComment(Long id){
+       commentRepository.findById(id)
+               .ifPresentOrElse(commentRepository::
+                       delete, ()->{throw new ResourceNotFoundException("Comment with id: "+id+" not found");});
+
+
     }
 }
