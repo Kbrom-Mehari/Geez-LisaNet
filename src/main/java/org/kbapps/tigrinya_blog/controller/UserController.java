@@ -1,5 +1,6 @@
 package org.kbapps.tigrinya_blog.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.kbapps.tigrinya_blog.dto.userDto.CreateUserDto;
 import org.kbapps.tigrinya_blog.dto.userDto.GetUserDto;
@@ -30,7 +31,7 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
     @PostMapping
-    public ResponseEntity<GetUserDto> createUser(@RequestBody CreateUserDto createUserDto) {        // using DTO
+    public ResponseEntity<GetUserDto> createUser(@Valid @RequestBody CreateUserDto createUserDto) {        // using DTO
         GetUserDto user =userService.createUser(createUserDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);  //status code 201 created
     }
