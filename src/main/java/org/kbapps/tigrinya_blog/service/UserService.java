@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.kbapps.tigrinya_blog.dto.userDto.CreateUserDto;
 import org.kbapps.tigrinya_blog.dto.userDto.GetUserDto;
 import org.kbapps.tigrinya_blog.dto.userDto.UpdateUserDto;
+import org.kbapps.tigrinya_blog.exception.DuplicateEntryException;
 import org.kbapps.tigrinya_blog.exception.ResourceNotFoundException;
 import org.kbapps.tigrinya_blog.mapper.userMapper.CreateUserMapper;
 import org.kbapps.tigrinya_blog.mapper.userMapper.GetUserMapper;
@@ -20,6 +21,12 @@ public class UserService {
     private final GetUserMapper getUserMapper;
 
     public GetUserDto createUser(CreateUserDto createUserDto) {
+        if(userRepository.existsByEmail(createUserDto.getEmail())){
+            throw new DuplicateEntryException("Email already exists");
+        }
+        if(userRepository.existsByUsername(createUserDto.getUsername())){
+            throw new DuplicateEntryException("Username already exists");
+        }
         User user=createUserMapper.toEntity(createUserDto);
         return getUserMapper.toDto(userRepository.save(user)) ;
     }
