@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 import org.kbapps.tigrinya_blog.model.enums.Gender;
 import org.kbapps.tigrinya_blog.model.enums.Role;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Data
 @Entity
 @NoArgsConstructor
@@ -29,5 +32,6 @@ public class User {
     private String firstName;
     private String lastName;
     @Enumerated(EnumType.STRING)
-    private Role role;
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<Role> role=new HashSet<>();
 }
