@@ -14,6 +14,7 @@ public class BlogPost extends Auditable {
     private Long id;
     @Column(nullable=false)
     private String title;
+    private String geezVersion;
     private String description;
     @Column(nullable=false)
     private String body;
