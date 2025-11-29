@@ -23,5 +23,4 @@ public class BlogPost extends Auditable {
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="authorId",unique=true, nullable=false)
     private User author;
-
 }
