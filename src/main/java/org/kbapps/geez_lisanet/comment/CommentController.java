@@ -38,5 +38,4 @@ public class CommentController {
     public GetCommentDto updateComment(@RequestBody UpdateCommentDto updateCommentDto, @PathVariable Long id) {
         return commentService.updateComment(updateCommentDto, id);
     }
-
 }
