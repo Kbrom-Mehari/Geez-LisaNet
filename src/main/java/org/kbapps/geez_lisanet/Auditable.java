@@ -20,4 +20,4 @@ public abstract class Auditable {
     private LocalDateTime updatedAt;
 
 }
-// This class is inherited by entity classes for reusability
+// This class will be inherited by entity classes for reusability
