@@ -65,7 +65,6 @@ public class UserService {
                        delete,()->{throw new ResourceNotFoundException("User with Id: "+id+" Not Found");});
 
     }
-
     public User findUserById(Long id) {      //only for Mappers
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with Id: "+id+" Not Found"));
